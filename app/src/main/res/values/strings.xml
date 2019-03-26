@@ -1,3 +1,4 @@
 <resources>
   <string name="app_name">задачник</string>
+  <string name="name">Название</string>
 </resources>
