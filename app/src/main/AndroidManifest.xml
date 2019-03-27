@@ -10,7 +10,7 @@
     android:supportsRtl="true"
     android:theme="@style/AppTheme">
 
-    <activity android:name=".MainActivity" />
+    <activity android:name=".AddTaskActivity" />
 
     <activity android:name=".TasksActivity">
       <intent-filter>

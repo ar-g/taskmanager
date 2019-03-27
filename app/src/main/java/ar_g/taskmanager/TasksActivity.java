@@ -1,101 +1,52 @@
 package ar_g.taskmanager;
 
-import android.support.annotation.NonNull;
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.RecyclerView;
-import android.view.LayoutInflater;
-import android.view.View;
-import android.view.ViewGroup;
-import android.widget.TextView;
-import android.widget.Toast;
-
-import java.util.ArrayList;
-import java.util.List;
+import android.support.annotation.Nullable;
+import android.support.design.widget.TabLayout;
+import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentManager;
+import android.support.v4.app.FragmentPagerAdapter;
+import android.support.v4.app.FragmentStatePagerAdapter;
+import android.support.v4.view.PagerAdapter;
+import android.support.v4.view.ViewPager;
+import android.support.v7.app.AppCompatActivity;
 
 public class TasksActivity extends AppCompatActivity {
-
-  private RecyclerView rv;
 
   @Override
   protected void onCreate(Bundle savedInstanceState) {
     super.onCreate(savedInstanceState);
     setContentView(R.layout.activity_tasks);
 
-    rv = findViewById(R.id.rv);
-    rv.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false));
-    TasksAdapter adapter = new TasksAdapter(new TaskClickListener() {
-      @Override public void onClick(Task task) {
-        Toast.makeText(TasksActivity.this, task.getName() + " in progress..", Toast.LENGTH_SHORT).show();
-      }
-    });
-    rv.setAdapter(adapter);
+    ViewPager vp = findViewById(R.id.vp);
+    TabLayout tl = findViewById(R.id.tl);
 
-    adapter.seData(generateFakeData());
+    PagerAdapter adapter = new PageAdapter(getSupportFragmentManager());
+    vp.setAdapter(adapter);
+    tl.setupWithViewPager(vp);
+
+//    getSupportFragmentManager()
+//      .beginTransaction()
+//      .add(R.id.container, new TasksFragment())
+//      .commit();
   }
 
-  public List<Task> generateFakeData(){
-    List<Task> tasks = new ArrayList<>();
-    for (int i = 0; i < 100; i++) {
-      tasks.add(new Task("Task " + i, 3));
-    }
-    return tasks;
-  }
 
-  public static class TasksAdapter extends RecyclerView.Adapter<TaskViewHolder>{
-    private final List<Task> data = new ArrayList<>();
-    private final TaskClickListener taskClickListener;
-
-    public TasksAdapter(TaskClickListener taskClickListener) {
-      this.taskClickListener = taskClickListener;
+  public class PageAdapter extends FragmentPagerAdapter {
+    public PageAdapter(FragmentManager fm) {
+      super(fm);
     }
 
-    @NonNull @Override public TaskViewHolder onCreateViewHolder(@NonNull ViewGroup viewGroup, final int position) {
-      LayoutInflater layoutInflater = LayoutInflater.from(viewGroup.getContext());
-      View view = layoutInflater.inflate(R.layout.item_task, viewGroup, false);
-      final TaskViewHolder viewHolder = new TaskViewHolder(view);
-
-      view.setOnClickListener(new View.OnClickListener() {
-        @Override public void onClick(View v) {
-          if (RecyclerView.NO_POSITION != viewHolder.getAdapterPosition()) {
-            taskClickListener.onClick(data.get(viewHolder.getAdapterPosition()));
-          }
-        }
-      });
-      return viewHolder;
+    @Nullable @Override public CharSequence getPageTitle(int position) {
+      return "Tasks";
     }
 
-    @Override public void onBindViewHolder(@NonNull TaskViewHolder taskViewHolder, int position) {
-      Task task = data.get(position);
-      taskViewHolder.setData(task);
+    @Override public Fragment getItem(int position) {
+      return new TasksFragment();
     }
 
-    @Override public int getItemCount() {
-      return data.size();
+    @Override public int getCount() {
+      return 2;
     }
-
-    public void seData(List<Task> data) {
-      this.data.clear();
-      this.data.addAll(data);
-      notifyDataSetChanged();
-    }
-  }
-
-  public static class TaskViewHolder extends RecyclerView.ViewHolder {
-    private final TextView tvTaskName;
-
-    public TaskViewHolder(@NonNull View itemView) {
-      super(itemView);
-      tvTaskName = itemView.findViewById(R.id.tvTaskName);
-    }
-
-    public void setData(Task task) {
-      tvTaskName.setText(task.getName());
-    }
-  }
-
-  public interface TaskClickListener{
-    public void onClick(Task task);
   }
 }
