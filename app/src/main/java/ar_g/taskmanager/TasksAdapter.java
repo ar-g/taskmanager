@@ -9,6 +9,8 @@ import android.view.ViewGroup;
 import java.util.ArrayList;
 import java.util.List;
 
+import ar_g.db.Task;
+
 public class TasksAdapter extends RecyclerView.Adapter<TaskViewHolder>{
   private final List<Task> data = new ArrayList<>();
   private final TaskClickListener taskClickListener;

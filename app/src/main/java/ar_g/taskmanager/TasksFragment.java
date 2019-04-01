@@ -1,5 +1,6 @@
 package ar_g.taskmanager;
 
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -16,10 +17,16 @@ import android.widget.Toast;
 import java.util.ArrayList;
 import java.util.List;
 
+import ar_g.db.AppDatabase;
+import ar_g.db.Task;
+import ar_g.db.TaskDao;
+
 import static android.app.Activity.RESULT_OK;
 
 public class TasksFragment extends Fragment {
   public static final int ADD_TASK_REQUEST_CODE = 101;
+
+  private TasksAdapter adapter;
 
   @Nullable @Override public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
     LayoutInflater layoutInflater = LayoutInflater.from(getContext());
@@ -43,31 +50,42 @@ public class TasksFragment extends Fragment {
 
     rv = view.findViewById(R.id.rv);
     rv.setLayoutManager(new LinearLayoutManager(getContext(), LinearLayoutManager.VERTICAL, false));
-    TasksAdapter adapter = new TasksAdapter(new TaskClickListener() {
+    adapter = new TasksAdapter(new TaskClickListener() {
       @Override public void onClick(Task task) {
-        Toast.makeText(getContext(), task.getName() + " in progress..", Toast.LENGTH_SHORT).show();
+        Toast.makeText(getContext(), task.name + " in progress..", Toast.LENGTH_SHORT).show();
       }
     });
     rv.setAdapter(adapter);
 
-    adapter.seData(generateFakeData());
+    getLatestTasks();
   }
 
   @Override public void onActivityResult(int requestCode, int resultCode, Intent data) {
     super.onActivityResult(requestCode, resultCode, data);
     if (requestCode == ADD_TASK_REQUEST_CODE && resultCode == RESULT_OK){
       if (data != null){
-        Task task = ((Task) data.getSerializableExtra(Task.class.getName()));
-        Toast.makeText(getContext(), task.getName(), Toast.LENGTH_SHORT).show();
+        insertTask(data);
+        getLatestTasks();
       }
     }
   }
 
-  public List<Task> generateFakeData(){
-    List<Task> tasks = new ArrayList<>();
-    for (int i = 0; i < 100; i++) {
-      tasks.add(new Task("Task " + i, 3));
+  private void getLatestTasks() {
+    Context context = getContext();
+    if (context != null){
+      AppDatabase db = App.getApp(context).getDb();
+      TaskDao taskDao = db.taskDao();
+      adapter.seData(taskDao.getAll());
     }
-    return tasks;
+  }
+
+  private void insertTask(Intent data) {
+    Task task = ((Task) data.getSerializableExtra(Task.class.getName()));
+    Context context = getContext();
+    if (context != null){
+      AppDatabase db = App.getApp(context).getDb();
+      TaskDao taskDao = db.taskDao();
+      taskDao.insert(task);
+    }
   }
 }
