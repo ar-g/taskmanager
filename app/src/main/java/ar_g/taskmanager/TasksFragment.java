@@ -7,6 +7,7 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -39,7 +40,15 @@ public class TasksFragment extends Fragment {
 
     RecyclerView rv;
     FloatingActionButton fab;
+    final SwipeRefreshLayout swipeRefreshLayout;
 
+    swipeRefreshLayout = view.findViewById(R.id.swipeRefreshLayout);
+    swipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+      @Override public void onRefresh() {
+        getLatestTasks();
+        swipeRefreshLayout.setRefreshing(false);
+      }
+    });
 
     fab = view.findViewById(R.id.fab);
     fab.setOnClickListener(new View.OnClickListener() {
@@ -56,8 +65,6 @@ public class TasksFragment extends Fragment {
       }
     });
     rv.setAdapter(adapter);
-
-    getLatestTasks();
   }
 
   @Override public void onActivityResult(int requestCode, int resultCode, Intent data) {
@@ -65,7 +72,6 @@ public class TasksFragment extends Fragment {
     if (requestCode == ADD_TASK_REQUEST_CODE && resultCode == RESULT_OK){
       if (data != null){
         insertTask(data);
-        getLatestTasks();
       }
     }
   }

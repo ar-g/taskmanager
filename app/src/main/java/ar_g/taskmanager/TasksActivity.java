@@ -18,6 +18,7 @@ public class TasksActivity extends AppCompatActivity {
     super.onCreate(savedInstanceState);
     setContentView(R.layout.activity_tasks);
 
+
     ViewPager vp = findViewById(R.id.vp);
     TabLayout tl = findViewById(R.id.tl);
 
