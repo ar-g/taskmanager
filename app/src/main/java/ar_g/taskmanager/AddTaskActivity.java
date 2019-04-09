@@ -8,10 +8,11 @@ import android.text.TextWatcher;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.Toast;
 
 import ar_g.db.Task;
 
-public class AddTaskActivity extends AppCompatActivity {
+public class AddTaskActivity extends AppCompatActivity implements PriorityDialogListener {
 
 
   @Override
@@ -21,6 +22,15 @@ public class AddTaskActivity extends AppCompatActivity {
 
     final EditText etName = findViewById(R.id.etName);
     final Button btnAdd = findViewById(R.id.btnAdd);
+    final Button btnPriority = findViewById(R.id.btnPriority);
+
+    btnPriority.setOnClickListener(new View.OnClickListener() {
+      @Override public void onClick(View v) {
+        PriorityDialogFragment priorityDialogFragment = new PriorityDialogFragment();
+        priorityDialogFragment.show(getSupportFragmentManager(), PriorityDialogFragment.TAG);
+      }
+    });
+
     btnAdd.setEnabled(false);
     btnAdd.setOnClickListener(new View.OnClickListener() {
       @Override public void onClick(View v) {
@@ -46,5 +56,9 @@ public class AddTaskActivity extends AppCompatActivity {
         btnAdd.setEnabled(!text.isEmpty());
       }
     });
+  }
+
+  @Override public void onPriorityChosen(int priority) {
+    Toast.makeText(this, "Priority is " + priority, Toast.LENGTH_SHORT).show();
   }
 }
