@@ -18,7 +18,6 @@ public class App extends Application {
     if (db == null){
       db = Room
         .databaseBuilder(getApplicationContext(), AppDatabase.class, "database-name")
-        .allowMainThreadQueries()
         .build();
     }
     return db;
