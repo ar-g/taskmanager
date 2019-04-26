@@ -1,4 +1,4 @@
-package ar_g.taskmanager;
+package ar_g.taskmanager.features.tasks;
 
 import android.content.Context;
 import android.content.Intent;
@@ -18,15 +18,25 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Toast;
 
+import org.reactivestreams.Subscription;
+
 import java.lang.ref.WeakReference;
 import java.util.List;
 import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
 
-import ar_g.db.AppDatabase;
-import ar_g.db.Task;
-import ar_g.db.TaskDao;
+import ar_g.taskmanager.shared.db.AppDatabase;
+import ar_g.taskmanager.shared.model.Task;
+import ar_g.taskmanager.shared.db.TaskDao;
+import ar_g.taskmanager.shared.App;
+import ar_g.taskmanager.R;
+import ar_g.taskmanager.features.addtask.AddTaskActivity;
+import io.reactivex.FlowableSubscriber;
+import io.reactivex.android.schedulers.AndroidSchedulers;
+import io.reactivex.disposables.Disposable;
+import io.reactivex.functions.Consumer;
+import io.reactivex.schedulers.Schedulers;
 
 import static android.app.Activity.RESULT_OK;
 
@@ -48,6 +58,8 @@ public class TasksFragment extends Fragment {
   );
 
   private InsertTask insertTask;
+  private Disposable getTasksDisposable;
+  private FlowableSubscriber<List<Task>> flowableSubscriber;
 
 
   @Nullable @Override public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
@@ -66,7 +78,6 @@ public class TasksFragment extends Fragment {
     swipeRefreshLayout = view.findViewById(R.id.swipeRefreshLayout);
     swipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
       @Override public void onRefresh() {
-        getLatestTasks();
         swipeRefreshLayout.setRefreshing(false);
       }
     });
@@ -86,6 +97,46 @@ public class TasksFragment extends Fragment {
       }
     });
     rv.setAdapter(adapter);
+
+    getLatestTasksReactively();
+  }
+
+  private void getLatestTasksReactively() {
+    Context context = getContext();
+    if (context != null) {
+      AppDatabase db = App.getApp(context).getDb();
+      final TaskDao taskDao = db.taskDao();
+
+      flowableSubscriber = taskDao.getAllReactively()
+        .subscribeOn(Schedulers.io())
+        .observeOn(AndroidSchedulers.mainThread())
+        .subscribeWith(new FlowableSubscriber<List<Task>>() {
+          @Override public void onSubscribe(Subscription s) {
+
+          }
+          @Override public void onNext(List<Task> tasks) {
+            adapter.seData(tasks);
+
+          }
+          @Override public void onError(Throwable t) {
+            Log.d("34", "msg", t);
+          }
+          @Override public void onComplete() {
+
+          }
+        });
+      //        .subscribe(tasks -> {
+//          adapter.seData(tasks);
+//        }, throwable -> {
+//          Log.d("34", "msg", throwable);
+//        });
+    }
+  }
+
+  @Override public void onDestroyView() {
+    super.onDestroyView();
+    getTasksDisposable.dispose();
+
   }
 
   @Override public void onActivityResult(int requestCode, int resultCode, Intent data) {

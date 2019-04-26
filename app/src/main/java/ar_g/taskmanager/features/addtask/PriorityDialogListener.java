@@ -1,4 +1,4 @@
-package ar_g.taskmanager;
+package ar_g.taskmanager.features.addtask;
 
 interface PriorityDialogListener {
   void onPriorityChosen(int priority);

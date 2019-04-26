@@ -1,4 +1,4 @@
-package ar_g.taskmanager;
+package ar_g.taskmanager.features.productivity;
 
 import android.os.Bundle;
 import android.support.annotation.NonNull;

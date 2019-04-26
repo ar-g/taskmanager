@@ -1,10 +1,10 @@
-package ar_g.taskmanager;
+package ar_g.taskmanager.shared;
 
 import android.app.Application;
 import android.arch.persistence.room.Room;
 import android.content.Context;
 
-import ar_g.db.AppDatabase;
+import ar_g.taskmanager.shared.db.AppDatabase;
 
 public class App extends Application {
 

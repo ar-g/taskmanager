@@ -1,4 +1,4 @@
-package ar_g.db;
+package ar_g.taskmanager.shared.model;
 
 import android.arch.persistence.room.Entity;
 import android.arch.persistence.room.PrimaryKey;

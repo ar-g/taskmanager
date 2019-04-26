@@ -1,4 +1,4 @@
-package ar_g.taskmanager;
+package ar_g.taskmanager.features.tasks;
 
 import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
@@ -9,7 +9,8 @@ import android.view.ViewGroup;
 import java.util.ArrayList;
 import java.util.List;
 
-import ar_g.db.Task;
+import ar_g.taskmanager.shared.model.Task;
+import ar_g.taskmanager.R;
 
 public class TasksAdapter extends RecyclerView.Adapter<TaskViewHolder>{
   private final List<Task> data = new ArrayList<>();

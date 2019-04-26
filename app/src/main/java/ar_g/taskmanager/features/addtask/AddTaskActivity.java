@@ -1,4 +1,4 @@
-package ar_g.taskmanager;
+package ar_g.taskmanager.features.addtask;
 
 import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
@@ -10,7 +10,8 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
 
-import ar_g.db.Task;
+import ar_g.taskmanager.shared.model.Task;
+import ar_g.taskmanager.R;
 
 public class AddTaskActivity extends AppCompatActivity implements PriorityDialogListener {
 

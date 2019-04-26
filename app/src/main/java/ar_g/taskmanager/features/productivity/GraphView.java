@@ -1,4 +1,4 @@
-package ar_g.taskmanager;
+package ar_g.taskmanager.features.productivity;
 
 import android.content.Context;
 import android.content.res.TypedArray;
@@ -12,6 +12,8 @@ import android.view.View;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
+
+import ar_g.taskmanager.R;
 
 public class GraphView extends View {
   private final List<Integer> tasksPerDay = Arrays.asList(10, 6, 5, 4, 5, 1, 33);

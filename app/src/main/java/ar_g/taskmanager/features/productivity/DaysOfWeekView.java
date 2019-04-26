@@ -1,4 +1,4 @@
-package ar_g.taskmanager;
+package ar_g.taskmanager.features.productivity;
 
 import android.content.Context;
 import android.view.View;
