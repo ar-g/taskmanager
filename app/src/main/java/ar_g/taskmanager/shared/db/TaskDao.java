@@ -13,10 +13,7 @@ import io.reactivex.Flowable;
 public interface TaskDao {
 
   @Query("SELECT * FROM Task")
-  Flowable<List<Task>> getAllReactively();
-
-  @Query("SELECT * FROM Task")
-  List<Task> getAll();
+  Flowable<List<Task>> getAll();
 
   @Insert
   void insert(Task task);
