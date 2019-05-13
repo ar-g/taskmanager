@@ -16,8 +16,13 @@ import android.widget.Toast;
 
 import java.util.List;
 
+import javax.inject.Inject;
+
 import ar_g.taskmanager.R;
 import ar_g.taskmanager.features.addtask.AddTaskActivity;
+import ar_g.taskmanager.shared.di.DaggerTasksComponent;
+import ar_g.taskmanager.shared.di.TasksAppModule;
+import ar_g.taskmanager.shared.di.TasksComponent;
 import ar_g.taskmanager.shared.model.Task;
 
 import static android.app.Activity.RESULT_OK;
@@ -26,7 +31,7 @@ public class TasksFragment extends Fragment implements TasksView {
   public static final int ADD_TASK_REQUEST_CODE = 101;
 
   private TasksAdapter adapter;
-  private TasksPresenter tasksPresenter;
+  @Inject TasksPresenter tasksPresenter;
 
   @Nullable @Override public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
     LayoutInflater layoutInflater = LayoutInflater.from(getContext());
@@ -52,11 +57,12 @@ public class TasksFragment extends Fragment implements TasksView {
       .show());
     rv.setAdapter(adapter);
 
-    tasksPresenter = new TasksPresenter(
-      new TasksOperations(
-        TasksRepositoryFactory.getRepository()
-      )
-    );
+    TasksComponent tasksComponent = DaggerTasksComponent.builder()
+      .tasksAppModule(new TasksAppModule(getContext().getApplicationContext()))
+      .build();
+
+    tasksComponent.inject(this);
+
     tasksPresenter.onAttach(this);
   }
 

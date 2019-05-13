@@ -3,14 +3,16 @@ package ar_g.taskmanager.features.tasks;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.inject.Inject;
+
 import ar_g.taskmanager.shared.model.Task;
 import io.reactivex.Flowable;
-import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.schedulers.Schedulers;
 
 public class TasksOperations {
   private final TasksRepository tasksRepository;
 
+  @Inject
   public TasksOperations(TasksRepository tasksRepository) {this.tasksRepository = tasksRepository;}
 
   public Flowable<List<Task>> getAllTasksCapsLock() {
